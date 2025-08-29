@@ -1,71 +1,74 @@
+#include <stdint.h>
 #include <stdio.h>
-#include <stdlib.h>
-#include <string.h>
+
+#define NAME_LEN 16
 
 typedef struct potion_s
 {
-    char *name;
+    char name[NAME_LEN];
     void (*print_name)(struct potion_s *);
 
-    int ounces;
+    uint8_t ounces;
     void (*print_ounces)(struct potion_s *);
 
 } potion_t;
 
-static void print_name(potion_t *p)
+void print_name(potion_t * potion)
 {
-    printf("%s\n", p->name);
+    printf("%s\n", potion->name);
 }
 
-static void print_ounces(potion_t *p)
+void print_ounces(potion_t * potion)
 {
-    printf("%d ounces\n", p->ounces);
+    printf("%d ounces\n", potion->ounces);
 }
 
-char * copy_string(const char *src)
+/*
+ * src means source
+ * dst means destination
+ */
+void copy_name(const char src[], char dst[])
 {
-    size_t len = strlen(src) + 1;      // +1 for null terminator
-    char * dst = malloc(len);
-    if (dst != NULL)
+    for(uint8_t index = 0; index < NAME_LEN; ++index)
     {
-        memcpy(dst, src, len);
+        dst[index] = src[index];
+        if ('\0' == src[index])
+        {
+            break;
+        }
     }
-    return dst;
+    
+    dst[NAME_LEN - 1] = '\0';
 }
 
 potion_t create_potion(const char *name, const int ounces)
 {
     potion_t potion;
 
-    potion.name = copy_string(name);
+    copy_name(name, potion.name);
+
+    /*
+     * Connect the function pointer to the function definition.
+     */
     potion.print_name = print_name;
     
     potion.ounces = ounces;
     potion.print_ounces = print_ounces;
 
-    return potion;
+    return (potion);
 }
 
-void destroy_potion(potion_t * potion)
-{
-    if (potion->name != NULL)
-    {
-        free(potion->name);
-        potion->name = NULL;
-    }
-}
+// C doing OOP
+#define invoke(obj, method) ((obj).method(&(obj)))
 
 int main(void)
 {
-    // Create a potion
     potion_t matcha = create_potion("matcha", 12);
+    invoke(matcha, print_name);
+    invoke(matcha, print_ounces);
 
-    // Call its "methods"
-    matcha.print_name(&matcha);
-    matcha.print_ounces(&matcha);
+    potion_t water = create_potion("water", 12);
+    water.print_name(&matcha);
+    water.print_ounces(&water);
 
-    // Clean up
-    destroy_potion(&matcha);
-
-    return 0;
 }
