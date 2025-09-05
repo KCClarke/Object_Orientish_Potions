@@ -13,7 +13,7 @@ typedef struct potion_s
 
 } potion_t;
 
-void print_name(potion_t * potion)
+void func_print_name(potion_t * potion)
 {
     printf("%s\n", potion->name);
 }
@@ -24,8 +24,8 @@ void print_ounces(potion_t * potion)
 }
 
 /*
- * src means source
- * dst means destination
+ * src means source.
+ * dst means destination.
  */
 void copy_name(const char src[], char dst[])
 {
@@ -41,7 +41,7 @@ void copy_name(const char src[], char dst[])
     dst[NAME_LEN - 1] = '\0';
 }
 
-potion_t create_potion(const char *name, const int ounces)
+potion_t make_potion(const char *name, const int ounces)
 {
     potion_t potion;
 
@@ -50,7 +50,7 @@ potion_t create_potion(const char *name, const int ounces)
     /*
      * Connect the function pointer to the function definition.
      */
-    potion.print_name = print_name;
+    potion.print_name = func_print_name;
     
     potion.ounces = ounces;
     potion.print_ounces = print_ounces;
@@ -59,16 +59,21 @@ potion_t create_potion(const char *name, const int ounces)
 }
 
 // C doing OOP
-#define invoke(obj, method) ((obj).method(&(obj)))
+#define use(obj, method) ((obj).method(&(obj)))
 
 int main(void)
 {
-    potion_t matcha = create_potion("matcha", 12);
-    invoke(matcha, print_name);
-    invoke(matcha, print_ounces);
+    potion_t matcha = make_potion("matcha", 12);
+    use(matcha, print_name);
+    use(matcha, print_ounces);
 
-    potion_t water = create_potion("water", 12);
-    water.print_name(&matcha);
+    potion_t water = make_potion("water", 12);
+    water.print_name(&water);
+
+    func_print_name(&water);
+
     water.print_ounces(&water);
+    
+    water.print_name(&matcha);
 
 }

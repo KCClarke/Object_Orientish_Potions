@@ -1,6 +1,5 @@
 CC      = gcc
 CFLAGS  = -std=c99 -g -I. -Wall -MMD -MP
-LDFLAGS =
 TARGET  = potions
 
 SRC     = $(wildcard *.c)
@@ -9,7 +8,7 @@ DEPDIR  = .deps
 DEP     = $(OBJ:%.o=$(DEPDIR)/%.d)
 
 $(TARGET): $(OBJ)
-	$(CC) -o $@ $(OBJ) $(LDFLAGS)
+	$(CC) -o $@ $(OBJ)
 
 # Build object files and move dependency files into .deps/
 %.o: %.c | $(DEPDIR)
