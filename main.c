@@ -70,7 +70,7 @@ int main(void)
     potion_t water = make_potion("water", 12);
     water.print_name(&water);
 
-    func_print_name(&water);
+    func_print_name(&water); // using raw function
 
     water.print_ounces(&water);
     
